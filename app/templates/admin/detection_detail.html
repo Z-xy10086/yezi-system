@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}检测详情 - 农作物叶片病斑检测系统{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3><i class="fas fa-image"></i> 原始图片</h3>
+            </div>
+            <div class="card-body">
+                <img src="{{ url_for('static', filename='../uploads/' + os.path.basename(detection.image_path)) }}" 
+                     class="img-fluid rounded-lg shadow-sm">
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h3><i class="fas fa-search"></i> 检测结果</h3>
+            </div>
+            <div class="card-body">
+                <img src="{{ url_for('static', filename='../output/' + os.path.basename(detection.result_image)) }}" 
+                     class="img-fluid rounded-lg shadow-sm">
+                <p class="text-center mt-2 text-muted">红色框标注为病斑区域</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h3><i class="fas fa-chart-pie"></i> 检测数据</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <div class="text-3xl font-bold text-primary">
+                                    {{ detection.leaf_area }}
+                                </div>
+                                <div class="text-sm text-muted">叶片面积（像素）</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <div class="text-3xl font-bold text-danger">
+                                    {{ detection.lesion_area }}
+                                </div>
+                                <div class="text-sm text-muted">病斑面积（像素）</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <div class="text-3xl font-bold {% if detection.lesion_ratio >= 30 %}text-danger{% elif detection.lesion_ratio >= 15 %}text-warning{% else %}text-success{% endif %}">
+                                    {{ detection.lesion_ratio }}%
+                                </div>
+                                <div class="text-sm text-muted">病斑占比</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header {% if severity == '重度' %}bg-danger{% elif severity == '中度' %}bg-warning{% else %}bg-success{% endif %} text-white">
+                <h3><i class="fas fa-stethoscope"></i> 病情评估：{{ severity }}</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert {% if severity == '重度' %}alert-danger{% elif severity == '中度' %}alert-warning{% else %}alert-success{% endif %}">
+                    {{ advice }}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h4><i class="fas fa-user"></i> 用户信息</h4>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">用户名</dt>
+                    <dd class="col-sm-8">{{ user.username }}</dd>
+                    <dt class="col-sm-4">角色</dt>
+                    <dd class="col-sm-8">{{ '管理员' if user.role == 'admin' else '农户' }}</dd>
+                    <dt class="col-sm-4">手机号</dt>
+                    <dd class="col-sm-8">{{ user.phone or '-' }}</dd>
+                    <dt class="col-sm-4">邮箱</dt>
+                    <dd class="col-sm-8">{{ user.email or '-' }}</dd>
+                </dl>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header bg-secondary text-white">
+                <h4><i class="fas fa-calendar"></i> 检测信息</h4>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">检测ID</dt>
+                    <dd class="col-sm-8">{{ detection.id }}</dd>
+                    <dt class="col-sm-4">检测时间</dt>
+                    <dd class="col-sm-8">{{ detection.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</dd>
+                    <dt class="col-sm-4">状态</dt>
+                    <dd class="col-sm-8"><span class="badge bg-success">已完成</span></dd>
+                </dl>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-body">
+                <a href="{{ url_for('admin.index') }}" class="btn btn-primary w-100">
+                    <i class="fas fa-arrow-left"></i> 返回首页
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

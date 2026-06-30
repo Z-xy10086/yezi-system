@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}检测结果 - 农作物叶片病斑检测系统{% endblock %}
+
+{% block content %}
+<div class="card-custom">
+    <div class="card-header-custom">
+        <i class="fas fa-file-alt"></i> 检测报告
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card-custom p-4">
+                    <h5 class="font-weight-bold mb-4">检测图片</h5>
+                    <div class="text-center">
+                        <img src="{{ detection.image_path }}" class="img-fluid rounded" alt="检测图片" style="max-height: 400px; object-fit: contain;">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="card-custom p-4">
+                    <h5 class="font-weight-bold mb-4">病斑标记</h5>
+                    <div class="text-center">
+                        <img src="{{ detection.result_image }}" class="img-fluid rounded" alt="病斑标记" style="max-height: 400px; object-fit: contain;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <div class="stat-value">{{ detection.leaf_area }}</div>
+                    <div class="stat-label">叶片面积（像素）</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-disease"></i>
+                    </div>
+                    <div class="stat-value">{{ detection.lesion_area }}</div>
+                    <div class="stat-label">病斑面积（像素）</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="stat-value" style="color: {% if detection.lesion_ratio >= 30 %}#dc3545{% elif detection.lesion_ratio >= 15 %}#ffc107{% else %}#71b280{% endif %}">
+                        {{ detection.lesion_ratio }}%
+                    </div>
+                    <div class="stat-label">病斑占比</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-value">{{ detection.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                    <div class="stat-label">检测时间</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-custom mt-4">
+            <div class="card-header-custom">
+                <i class="fas fa-stethoscope"></i> 诊断结果
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-8">
+                        {% if detection.lesion_ratio < 15 %}
+                        <div class="alert-custom alert-success">
+                            <h4 class="font-weight-bold">健康状况：良好</h4>
+                            <p>病斑占比低于15%，叶片整体健康状况良好。建议继续保持良好的种植管理习惯。</p>
+                        </div>
+                        {% elif detection.lesion_ratio < 30 %}
+                        <div class="alert-custom alert-warning">
+                            <h4 class="font-weight-bold">健康状况：一般</h4>
+                            <p>病斑占比在15%-30%之间，叶片存在一定程度的病害。建议加强观察，采取必要的防治措施。</p>
+                        </div>
+                        {% else %}
+                        <div class="alert-custom alert-danger">
+                            <h4 class="font-weight-bold">健康状况：较差</h4>
+                            <p>病斑占比超过30%，叶片病害较为严重。建议立即采取防治措施，必要时咨询专业农技人员。</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card-custom p-4">
+                            <h5 class="font-weight-bold mb-3">防治建议</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i> 及时清除病叶</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i> 加强通风透光</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i> 合理施肥浇水</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i> 使用农药防治</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4 text-center">
+            <a href="{{ url_for('farmer.upload') }}" class="btn btn-custom mr-2">
+                <i class="fas fa-upload"></i> 继续检测
+            </a>
+            <a href="{{ url_for('farmer.detections') }}" class="btn btn-outline-custom">
+                <i class="fas fa-history"></i> 查看记录
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

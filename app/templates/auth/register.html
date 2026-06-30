@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}用户注册 - 农作物叶片病斑检测系统{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-sm-12">
+        <div class="card shadow-lg">
+            <div class="card-header bg-success text-white text-center">
+                <h2><i class="fas fa-user-plus"></i> 用户注册</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="register-form">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">用户名</label>
+                        <input type="text" class="form-control" id="username" name="username" 
+                               placeholder="请输入用户名" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">密码</label>
+                        <input type="password" class="form-control" id="password" name="password" 
+                               placeholder="请输入密码（至少6位）" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">确认密码</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" 
+                               placeholder="请再次输入密码" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">手机号（选填）</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" 
+                               placeholder="请输入手机号">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">邮箱（选填）</label>
+                        <input type="email" class="form-control" id="email" name="email" 
+                               placeholder="请输入邮箱">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">滑块验证</label>
+                        <div id="captcha-container" class="captcha-container">
+                            <div class="captcha-bg" id="captcha-bg">
+                                <canvas id="captcha-canvas"></canvas>
+                            </div>
+                            <div class="captcha-slider" id="captcha-slider">
+                                <div class="slider-icon">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            <div class="captcha-tips" id="captcha-tips">请拖动滑块完成验证</div>
+                        </div>
+                        <input type="hidden" id="captcha-token" name="captcha-token">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success w-100 btn-lg" id="submit-btn" disabled>
+                        <i class="fas fa-user-plus"></i> 注册
+                    </button>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <p>已有账号？<a href="{{ url_for('auth.login') }}">立即登录</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initCaptcha();
+        
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirm_password');
+        
+        confirmPassword.addEventListener('blur', function() {
+            if (password.value !== confirmPassword.value) {
+                confirmPassword.classList.add('is-invalid');
+            } else {
+                confirmPassword.classList.remove('is-invalid');
+            }
+        });
+    });
+</script>
+{% endblock %}

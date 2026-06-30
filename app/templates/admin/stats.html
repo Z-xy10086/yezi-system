@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}统计分析 - 农作物叶片病斑检测系统{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <div class="text-4xl"><i class="fas fa-users"></i></div>
+                <div class="text-3xl font-bold mt-2">{{ total_users }}</div>
+                <div class="text-sm">总用户数</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <div class="text-4xl"><i class="fas fa-user"></i></div>
+                <div class="text-3xl font-bold mt-2">{{ farmer_count }}</div>
+                <div class="text-sm">农户数</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger text-white">
+            <div class="card-body text-center">
+                <div class="text-4xl"><i class="fas fa-user-shield"></i></div>
+                <div class="text-3xl font-bold mt-2">{{ admin_count }}</div>
+                <div class="text-sm">管理员数</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body text-center">
+                <div class="text-4xl"><i class="fas fa-search"></i></div>
+                <div class="text-3xl font-bold mt-2">{{ total_detections }}</div>
+                <div class="text-sm">总检测次数</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-chart-pie"></i> 检测统计</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-success">{{ done_detections }}</div>
+                            <div class="text-sm text-muted">已完成检测</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-warning">{{ avg_ratio }}%</div>
+                            <div class="text-sm text-muted">平均病斑占比</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-clock"></i> 最近检测记录</h4>
+            </div>
+            <div class="card-body">
+                {% if recent_detections %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>时间</th>
+                                <th>用户</th>
+                                <th>病斑占比</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for det in recent_detections %}
+                            <tr>
+                                <td>{{ det.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>{{ det.user.username }}</td>
+                                <td>{{ det.lesion_ratio }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-center text-muted">暂无检测记录</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

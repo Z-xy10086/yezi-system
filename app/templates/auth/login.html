@@ -1,0 +1,323 @@
+{% extends 'base.html' %}
+
+{% block title %}用户登录 - 农作物叶片病斑检测系统{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+    }
+    
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    
+    .login-wrapper {
+        display: flex;
+        width: 900px;
+        max-width: 100%;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+    }
+    
+    .left-section {
+        width: 45%;
+        background: linear-gradient(135deg, #134e5e 0%, #71b280 100%);
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+    }
+    
+    .left-section img {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .left-section h1 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .left-section p {
+        font-size: 16px;
+        opacity: 0.9;
+        text-align: center;
+        line-height: 1.6;
+    }
+    
+    .right-section {
+        width: 55%;
+        padding: 60px 50px;
+    }
+    
+    .role-tabs {
+        display: flex;
+        margin-bottom: 30px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 5px;
+    }
+    
+    .role-tab {
+        flex: 1;
+        text-align: center;
+        padding: 12px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        color: #6c757d;
+    }
+    
+    .role-tab.active {
+        background: linear-gradient(135deg, #134e5e 0%, #71b280 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(19, 78, 94, 0.3);
+    }
+    
+    .form-title {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .form-title h2 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #134e5e;
+        margin-bottom: 8px;
+    }
+    
+    .form-title p {
+        color: #6c757d;
+        font-size: 14px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .form-group input {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        outline: none;
+    }
+    
+    .form-group input:focus {
+        border-color: #134e5e;
+        box-shadow: 0 0 0 3px rgba(19, 78, 94, 0.1);
+    }
+    
+    .captcha-wrapper {
+        margin-bottom: 20px;
+        width: 280px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .captcha-wrapper label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .login-btn {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #134e5e 0%, #71b280 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(19, 78, 94, 0.3);
+    }
+    
+    .login-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(19, 78, 94, 0.4);
+    }
+    
+    .login-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    
+    .links {
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .links a {
+        color: #134e5e;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .links a:hover {
+        text-decoration: underline;
+    }
+    
+    .alert-custom {
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+        .login-wrapper {
+            flex-direction: column;
+        }
+        
+        .left-section, .right-section {
+            width: 100%;
+        }
+        
+        .left-section {
+            padding: 40px 30px;
+        }
+        
+        .right-section {
+            padding: 40px 30px;
+        }
+        
+        .left-section img {
+            width: 120px;
+            height: 120px;
+        }
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-wrapper">
+        <div class="left-section">
+            <img src="{{ url_for('static', filename='../叶子.png') }}" alt="叶片">
+            <h1>农作物叶片病斑检测系统</h1>
+            <p>利用先进的图像处理技术，帮助农户快速准确地检测农作物叶片病斑，提供专业的防治建议。</p>
+        </div>
+        
+        <div class="right-section">
+            <div class="role-tabs">
+                <div class="role-tab active" data-role="farmer">农户登录</div>
+                <div class="role-tab" data-role="admin">管理员登录</div>
+            </div>
+            
+            <div class="form-title">
+                <h2 id="form-title">农户登录</h2>
+                <p id="form-subtitle">请输入您的账号信息</p>
+            </div>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert-custom alert-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            
+            <form method="POST" id="login-form">
+                <input type="hidden" name="role" id="role-input" value="farmer">
+                
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" name="username" placeholder="请输入用户名" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" placeholder="请输入密码" required>
+                </div>
+                
+                <div class="captcha-wrapper">
+                    <label>滑块验证</label>
+                    <div id="captcha-container" class="captcha-container">
+                        <div class="captcha-bg" id="captcha-bg">
+                            <canvas id="captcha-canvas"></canvas>
+                        </div>
+                        <div class="captcha-slider" id="captcha-slider">
+                        <div class="slider-arrow"></div>
+                    </div>
+                        <div class="captcha-tips" id="captcha-tips">请拖动滑块完成验证</div>
+                    </div>
+                    <input type="hidden" id="captcha-token" name="captcha-token">
+                </div>
+                
+                <button type="submit" class="login-btn" id="submit-btn" disabled>
+                    <i class="fas fa-sign-in-alt"></i> 登录
+                </button>
+                
+                <div class="links">
+                    {% if request.endpoint == 'auth.login' %}
+                    <p>还没有账号？<a href="{{ url_for('auth.register') }}">立即注册</a></p>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initCaptcha();
+        
+        const roleTabs = document.querySelectorAll('.role-tab');
+        const roleInput = document.getElementById('role-input');
+        const formTitle = document.getElementById('form-title');
+        const formSubtitle = document.getElementById('form-subtitle');
+        
+        roleTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                roleTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                const role = this.dataset.role;
+                roleInput.value = role;
+                
+                if (role === 'admin') {
+                    formTitle.textContent = '管理员登录';
+                    formSubtitle.textContent = '请输入管理员账号信息';
+                } else {
+                    formTitle.textContent = '农户登录';
+                    formSubtitle.textContent = '请输入您的账号信息';
+                }
+                
+                loadCaptcha();
+            });
+        });
+    });
+</script>
+{% endblock %}
